@@ -1,462 +1,414 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>古诗排序学习游戏</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Arial', '微软雅黑', sans-serif;
-            background: linear-gradient(135deg, #6ecbf5, #c2e9fb);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        h1 {
-            text-align: center;
-            color: #2c5aa0;
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .progress {
-            text-align: center;
-            font-size: 1.2em;
-            color: #5a5a5a;
-            margin-bottom: 20px;
-        }
-        
-        .poem-title {
-            text-align: center;
-            font-size: 1.8em;
-            color: #d4af37;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-        
-        .poem-area {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            border: 3px dashed #ddd;
-        }
-        
-        .answer-slot {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .slot {
-            background: #e8f4fd;
-            border: 2px solid #b8daff;
-            border-radius: 12px;
-            padding: 15px;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3em;
-            color: #666;
-            transition: all 0.3s ease;
-        }
-        
-        .slot.filled {
-            background: #d4edda;
-            border-color: #28a745;
-            color: #28a745;
-        }
-        
-        .slot.dropping {
-            background: #fff3cd;
-            border-color: #ffc107;
-        }
-        
-        .poem-lines {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .line {
-            background: #ffecd2;
-            border: 2px solid #ffcd3c;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            font-size: 1.2em;
-            cursor: grab;
-            user-select: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .line:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .line.dragging {
-            opacity: 0.5;
-            transform: scale(0.95);
-        }
-        
-        .controls {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            margin: 0 10px;
-            border-radius: 25px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-        
-        button:active {
-            transform: translateY(1px);
-        }
-        
-        .check-btn {
-            background: #2196F3;
-        }
-        
-        .retry-btn {
-            background: #ff9800;
-        }
-        
-        .next-btn {
-            background: #9C27B0;
-        }
-        
-        .message {
-            text-align: center;
-            font-size: 1.3em;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 10px;
-            display: none;
-        }
-        
-        .success {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #c3e6cb;
-        }
-        
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #f5c6cb;
-        }
-        
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background-color: #f00;
-            opacity: 0;
-            z-index: 1000;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>古诗排序学习游戏 - AI无限题库版</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Arial', '微软雅黑', sans-serif;
+  background: linear-gradient(135deg, #6ecbf5, #c2e9fb);
+  min-height: 100vh;
+  padding: 20px;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+h1 {
+  text-align: center;
+  color: #2c5aa0;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+.progress {
+  text-align: center;
+  font-size: 1.2em;
+  color: #5a5a5a;
+  margin-bottom: 20px;
+}
+.poem-title {
+  text-align: center;
+  font-size: 1.8em;
+  color: #d4af37;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+.poem-area {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 3px dashed #ddd;
+}
+.answer-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+.slot {
+  background: #e8f4fd;
+  border: 2px solid #b8daff;
+  border-radius: 12px;
+  padding: 15px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3em;
+  color: #666;
+  transition: all 0.3s ease;
+}
+.slot.filled {
+  background: #d4edda;
+  border-color: #28a745;
+  color: #28a745;
+}
+.slot.dropping {
+  background: #fff3cd;
+  border-color: #ffc107;
+}
+.poem-lines {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+.line {
+  background: #ffecd2;
+  border: 2px solid #ffcd3c;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  font-size: 1.2em;
+  cursor: grab;
+  user-select: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.line:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+.line.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+.controls {
+  text-align: center;
+  margin-bottom: 20px;
+}
+button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  margin: 0 10px;
+  border-radius: 25px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+button:active {
+  transform: translateY(1px);
+}
+.check-btn {
+  background: #2196F3;
+}
+.retry-btn {
+  background: #ff9800;
+}
+.next-btn {
+  background: #9C27B0;
+}
+.message {
+  text-align: center;
+  font-size: 1.3em;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 10px;
+  display: none;
+}
+.success {
+  background: #d4edda;
+  color: #155724;
+  border: 2px solid #c3e6cb;
+}
+.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 2px solid #f5c6cb;
+}
+.loading {
+  background: #fff3cd;
+  color: #856404;
+  border: 2px solid #ffeeba;
+}
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background-color: #f00;
+  opacity: 0;
+  z-index: 1000;
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>📚 古诗排序学习游戏</h1>
-        <div class="progress">第 <span id="current-poem">1</span> 首，共 <span id="total-poems">3</span> 首</div>
-        <div class="poem-title" id="poem-name">春晓</div>
-        
-        <div class="poem-area">
-            <div class="answer-slot" id="answer-slot">
-                <!-- 答案槽将通过JavaScript动态生成 -->
-            </div>
-            
-            <div class="poem-lines" id="poem-lines">
-                <!-- 诗句卡片将通过JavaScript动态生成 -->
-            </div>
-        </div>
-        
-        <div class="controls">
-            <button class="check-btn" onclick="checkAnswer()">✅ 检查答案</button>
-            <button class="retry-btn" onclick="retryPoem()" style="display:none;" id="retry-btn">🔄 再试一次</button>
-            <button class="next-btn" onclick="nextPoem()" style="display:none;" id="next-btn">➡️ 下一题</button>
-        </div>
-        
-        <div class="message" id="message"></div>
-    </div>
+<div class="container">
+  <h1>📚 古诗排序学习游戏（AI版）</h1>
+  <div class="progress">第 <span id="current-poem">1</span> 首（AI无限生成）</div>
+  <div class="poem-title" id="poem-name">生成中...</div>
 
-    <script>
-        // 预定义的古诗数据
-        const poems = [
-            {
-                name: "春晓",
-                lines: ["春眠不觉晓", "处处闻啼鸟", "夜来风雨声", "花落知多少"]
-            },
-            {
-                name: "静夜思",
-                lines: ["床前明月光", "疑是地上霜", "举头望明月", "低头思故乡"]
-            },
-            {
-                name: "悯农",
-                lines: ["锄禾日当午", "汗滴禾下土", "谁知盘中餐", "粒粒皆辛苦"]
-            }
-        ];
-        
-        let currentPoemIndex = 0;
-        let currentPoem = poems[currentPoemIndex];
-        let shuffledLines = [];
-        let answerSlots = [];
-        let draggedLine = null;
-        
-        // 初始化游戏
-        function initGame() {
-            // 更新进度显示
-            document.getElementById('current-poem').textContent = currentPoemIndex + 1;
-            document.getElementById('total-poems').textContent = poems.length;
-            document.getElementById('poem-name').textContent = currentPoem.name;
-            
-            // 重置消息和按钮状态
-            hideMessage();
-            hideButtons();
-            
-            // 生成打乱的诗句
-            shuffledLines = [...currentPoem.lines].sort(() => Math.random() - 0.5);
-            answerSlots = Array(currentPoem.lines.length).fill(null);
-            
-            // 渲染答案槽
-            renderAnswerSlots();
-            
-            // 渲染诗句卡片
-            renderPoemLines();
-        }
-        
-        // 渲染答案槽
-        function renderAnswerSlots() {
-            const slotContainer = document.getElementById('answer-slot');
-            slotContainer.innerHTML = '';
-            
-            for (let i = 0; i < currentPoem.lines.length; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'slot';
-                slot.id = `slot-${i}`;
-                slot.setAttribute('data-index', i);
-                
-                // 添加拖拽事件监听器
-                slot.addEventListener('dragover', handleDragOver);
-                slot.addEventListener('dragenter', handleDragEnter);
-                slot.addEventListener('dragleave', handleDragLeave);
-                slot.addEventListener('drop', handleDrop);
-                
-                slotContainer.appendChild(slot);
-            }
-        }
-        
-        // 渲染诗句卡片
-        function renderPoemLines() {
-            const linesContainer = document.getElementById('poem-lines');
-            linesContainer.innerHTML = '';
-            
-            shuffledLines.forEach((line, index) => {
-                const lineElement = document.createElement('div');
-                lineElement.className = 'line';
-                lineElement.id = `line-${index}`;
-                lineElement.textContent = line;
-                
-                // 添加拖拽事件监听器
-                lineElement.draggable = true;
-                lineElement.addEventListener('dragstart', handleDragStart);
-                lineElement.addEventListener('dragend', handleDragEnd);
-                
-                linesContainer.appendChild(lineElement);
-            });
-        }
-        
-        // 拖拽开始
-        function handleDragStart(e) {
-            draggedLine = e.target;
-            e.target.classList.add('dragging');
-        }
-        
-        // 拖拽结束
-        function handleDragEnd(e) {
-            e.target.classList.remove('dragging');
-            draggedLine = null;
-        }
-        
-        // 拖拽悬停
-        function handleDragOver(e) {
-            e.preventDefault();
-        }
-        
-        // 拖拽进入
-        function handleDragEnter(e) {
-            e.preventDefault();
-            e.target.classList.add('dropping');
-        }
-        
-        // 拖拽离开
-        function handleDragLeave(e) {
-            e.target.classList.remove('dropping');
-        }
-        
-        // 拖拽放置
-        function handleDrop(e) {
-            e.preventDefault();
-            e.target.classList.remove('dropping');
-            
-            if (draggedLine) {
-                const slotIndex = parseInt(e.target.getAttribute('data-index'));
-                
-                // 如果槽位已有内容，先将其放回
-                if (answerSlots[slotIndex]) {
-                    // 将原有内容放回诗句区域
-                    const oldLine = document.getElementById(answerSlots[slotIndex]);
-                    if (oldLine) {
-                        document.getElementById('poem-lines').appendChild(oldLine);
-                    }
-                }
-                
-                // 将拖拽的诗句放入槽位
-                e.target.innerHTML = '';
-                e.target.appendChild(draggedLine);
-                e.target.classList.add('filled');
-                
-                // 记录槽位内容
-                answerSlots[slotIndex] = draggedLine.id;
-                
-                // 从诗句区域移除
-                draggedLine.style.cursor = 'default';
-                draggedLine.draggable = false;
-            }
-        }
-        
-        // 检查答案
-        function checkAnswer() {
-            const userAnswer = answerSlots.map(index => {
-                if (index) {
-                    const lineElement = document.getElementById(index);
-                    return lineElement ? lineElement.textContent : '';
-                }
-                return '';
-            }).filter(line => line !== '');
-            
-            if (userAnswer.length !== currentPoem.lines.length) {
-                showMessage('❌ 还没填完所有的诗句哦！', 'error');
-                return;
-            }
-            
-            const isCorrect = JSON.stringify(userAnswer) === JSON.stringify(currentPoem.lines);
-            
-            if (isCorrect) {
-                showMessage('🎉 恭喜你答对了！太棒了！', 'success');
-                showConfetti();
-                document.getElementById('next-btn').style.display = 'inline-block';
-            } else {
-                showMessage('😅 答案不对呢，再试试看吧！', 'error');
-                document.getElementById('retry-btn').style.display = 'inline-block';
-                document.getElementById('next-btn').style.display = 'inline-block';
-            }
-        }
-        
-        // 显示消息
-        function showMessage(text, type) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = text;
-            messageDiv.className = `message ${type}`;
-            messageDiv.style.display = 'block';
-        }
-        
-        // 隐藏消息
-        function hideMessage() {
-            document.getElementById('message').style.display = 'none';
-        }
-        
-        // 显示按钮
-        function showButtons() {
-            document.getElementById('retry-btn').style.display = 'inline-block';
-            document.getElementById('next-btn').style.display = 'inline-block';
-        }
-        
-        // 隐藏按钮
-        function hideButtons() {
-            document.getElementById('retry-btn').style.display = 'none';
-            document.getElementById('next-btn').style.display = 'none';
-        }
-        
-        // 重新开始当前题目
-        function retryPoem() {
-            initGame();
-        }
-        
-        // 下一题
-        function nextPoem() {
-            currentPoemIndex = (currentPoemIndex + 1) % poems.length;
-            currentPoem = poems[currentPoemIndex];
-            initGame();
-        }
-        
-        // 创建庆祝动画
-        function showConfetti() {
-            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
-            const container = document.body;
-            
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.top = '-10px';
-                confetti.style.opacity = '1';
-                
-                container.appendChild(confetti);
-                
-                // 动画效果
-                const animation = confetti.animate([
-                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
-                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
-                ], {
-                    duration: 3000 + Math.random() * 3000,
-                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
-                });
-                
-                animation.onfinish = () => {
-                    confetti.remove();
-                };
-            }
-        }
-        
-        // 初始化游戏
-        initGame();
-    </script>
+  <div class="poem-area">
+    <div class="answer-slot" id="answer-slot"></div>
+    <div class="poem-lines" id="poem-lines"></div>
+  </div>
+
+  <div class="controls">
+    <button class="check-btn" onclick="checkAnswer()">✅ 检查答案</button>
+    <button class="retry-btn" onclick="retryPoem()" style="display:none;" id="retry-btn">🔄 再试一次</button>
+    <button class="next-btn" onclick="nextPoem()" style="display:none;" id="next-btn">➡️ 下一首（AI生成）</button>
+  </div>
+
+  <div class="message" id="message"></div>
+</div>
+
+<script>
+// 全局变量
+let currentPoem = null;
+let currentPoemIndex = 0;
+let shuffledLines = [];
+let answerSlots = [];
+let draggedLine = null;
+
+// 从 Vercel Serverless Function 获取一首新诗
+async function fetchNewPoem(customPrompt = '') {
+  try {
+    showMessage('AI 正在生成新古诗，请稍候...', 'loading');
+    const response = await fetch('/api/get-poem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: customPrompt })
+    });
+
+    if (!response.ok) {
+      throw new Error(`API 错误: ${response.status}`);
+    }
+
+    const poem = await response.json();
+    hideMessage();
+    return poem;
+  } catch (error) {
+    console.error('获取诗失败:', error);
+    hideMessage();
+    showMessage('生成失败，使用备用诗...', 'error');
+    // 备用诗（fallback）
+    return {
+      name: "静夜思",
+      lines: ["床前明月光", "疑是地上霜", "举头望明月", "低头思故乡"]
+    };
+  }
+}
+
+// 初始化游戏（首次和重置时调用）
+async function initGame() {
+  currentPoem = await fetchNewPoem();
+  document.getElementById('poem-name').textContent = currentPoem.name;
+  document.getElementById('current-poem').textContent = currentPoemIndex + 1;
+
+  hideMessage();
+  hideButtons();
+
+  shuffledLines = [...currentPoem.lines].sort(() => Math.random() - 0.5);
+  answerSlots = Array(currentPoem.lines.length).fill(null);
+
+  renderAnswerSlots();
+  renderPoemLines();
+}
+
+// 渲染答案槽
+function renderAnswerSlots() {
+  const slotContainer = document.getElementById('answer-slot');
+  slotContainer.innerHTML = '';
+
+  for (let i = 0; i < currentPoem.lines.length; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.id = `slot-${i}`;
+    slot.setAttribute('data-index', i);
+
+    slot.addEventListener('dragover', handleDragOver);
+    slot.addEventListener('dragenter', handleDragEnter);
+    slot.addEventListener('dragleave', handleDragLeave);
+    slot.addEventListener('drop', handleDrop);
+
+    slotContainer.appendChild(slot);
+  }
+}
+
+// 渲染诗句卡片
+function renderPoemLines() {
+  const linesContainer = document.getElementById('poem-lines');
+  linesContainer.innerHTML = '';
+
+  shuffledLines.forEach((line, index) => {
+    const lineElement = document.createElement('div');
+    lineElement.className = 'line';
+    lineElement.id = `line-${index}`;
+    lineElement.textContent = line;
+
+    lineElement.draggable = true;
+    lineElement.addEventListener('dragstart', handleDragStart);
+    lineElement.addEventListener('dragend', handleDragEnd);
+
+    linesContainer.appendChild(lineElement);
+  });
+}
+
+// 拖拽相关函数（保持原样）
+function handleDragStart(e) {
+  draggedLine = e.target;
+  e.target.classList.add('dragging');
+}
+
+function handleDragEnd(e) {
+  e.target.classList.remove('dragging');
+  draggedLine = null;
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+}
+
+function handleDragEnter(e) {
+  e.preventDefault();
+  e.target.classList.add('dropping');
+}
+
+function handleDragLeave(e) {
+  e.target.classList.remove('dropping');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  e.target.classList.remove('dropping');
+
+  if (draggedLine) {
+    const slotIndex = parseInt(e.target.getAttribute('data-index'));
+
+    if (answerSlots[slotIndex]) {
+      const oldLine = document.getElementById(answerSlots[slotIndex]);
+      if (oldLine) {
+        document.getElementById('poem-lines').appendChild(oldLine);
+      }
+    }
+
+    e.target.innerHTML = '';
+    e.target.appendChild(draggedLine);
+    e.target.classList.add('filled');
+
+    answerSlots[slotIndex] = draggedLine.id;
+
+    draggedLine.style.cursor = 'default';
+    draggedLine.draggable = false;
+  }
+}
+
+// 检查答案
+function checkAnswer() {
+  const userAnswer = answerSlots.map(id => {
+    const el = document.getElementById(id);
+    return el ? el.textContent : '';
+  }).filter(line => line !== '');
+
+  if (userAnswer.length !== currentPoem.lines.length) {
+    showMessage('❌ 还没填完所有的诗句哦！', 'error');
+    return;
+  }
+
+  const isCorrect = JSON.stringify(userAnswer) === JSON.stringify(currentPoem.lines);
+
+  if (isCorrect) {
+    showMessage('🎉 恭喜你答对了！太棒了！', 'success');
+    showConfetti();
+    document.getElementById('next-btn').style.display = 'inline-block';
+  } else {
+    showMessage('😅 答案不对呢，再试试看吧！', 'error');
+    document.getElementById('retry-btn').style.display = 'inline-block';
+    document.getElementById('next-btn').style.display = 'inline-block';
+  }
+}
+
+// 显示消息
+function showMessage(text, type = 'info') {
+  const msg = document.getElementById('message');
+  msg.textContent = text;
+  msg.className = `message ${type}`;
+  msg.style.display = 'block';
+}
+
+// 隐藏消息
+function hideMessage() {
+  document.getElementById('message').style.display = 'none';
+}
+
+// 隐藏按钮
+function hideButtons() {
+  document.getElementById('retry-btn').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+// 重新开始当前诗
+function retryPoem() {
+  initGame();
+}
+
+// 下一首（AI 新生成）
+async function nextPoem() {
+  currentPoemIndex++;
+  await initGame();  // 重新获取并渲染
+}
+
+// 庆祝动画
+function showConfetti() {
+  const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+  for (let i = 0; i < 100; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.left = Math.random() * 100 + 'vw';
+    confetti.style.top = '-10px';
+    document.body.appendChild(confetti);
+
+    confetti.animate([
+      { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+      { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+    ], {
+      duration: 3000 + Math.random() * 3000,
+      easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+    }).onfinish = () => confetti.remove();
+  }
+}
+
+// 游戏启动
+initGame();
+</script>
 </body>
 </html>
